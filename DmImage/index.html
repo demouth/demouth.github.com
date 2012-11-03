@@ -2,13 +2,426 @@
 <html>
 <head>
 <meta charset="UTF-8" />
+<link href="google-code-prettify/sons-of-obsidian.css" type="text/css" rel="stylesheet" />
+<link href="css/style.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="google-code-prettify/prettify.js"></script>
 <title>DmImage</title>
-
 </head>
 <body>
+	<header>
+		<h1>DmImage</h1>
+		<p>github.com/demouth/DmImage</p>
+		<a href="https://github.com/demouth/DmImage">github</a>
+		<a href="https://github.com/demouth/DmImage/archive/master.zip">download</a>
+		<a href="https://demouth.net/">@demouth</a>
+	</header>
+	<div id="contents">
+		
+		
+		<div class="section">
+			
+			<h2>DmImageについて</h2>
+			<ul>
+				<li>PHPライブラリ</li>
+				<li>PHP5.0以上で動作</li>
+				<li>GDのラッパー</li>
+				<li>GDが入っていれば動く</li>
+			</ul>
+		</div>
+		
+		<div class="section">
+			
+			<h2>include方法</h2>
+			一応PSR-0に準拠したつもりなので、Zendのオートローダー等で自動で読み込めると思います。
+			<br>
+			namespaceは使用していませんが、SplClassLoaderを使う場合と使わない場合はそれぞれこんな感じです。お好きな方法で読み込んでください。
+			<pre class="prettyprint linenums">
+&lt;?php
+// SplClassLoaderを使用する場合
+require_once 'SplClassLoader.php';
+$DmDirPath = '/path/to/lib/';
+$classLoader = new SplClassLoader(null, $DmDirPath);
+$classLoader->register();
+</pre>
+		
+			<pre class="prettyprint linenums">
+&lt;?php
+// SplClassLoaderを使用せず、1ファイル毎読み込む場合
+$DmDirPath = '/path/to/lib/';
+require_once $DmDirPath.'Dm/Color.php';
+require_once $DmDirPath.'Dm/Image.php';
+require_once $DmDirPath.'Dm/Image/Graphic/Interface.php';
+require_once $DmDirPath.'Dm/Image/Graphic/Text.php';
+require_once $DmDirPath.'Dm/Image/Graphic/Shape.php';
+require_once $DmDirPath.'Dm/Image/File.php';
+require_once $DmDirPath.'Dm/Image/Filter/Abstract.php';
+require_once $DmDirPath.'Dm/Image/Filter/Fit.php';
+require_once $DmDirPath.'Dm/Image/Filter/Crop.php';
+require_once $DmDirPath.'Dm/Image/Filter/InstagramNormal.php';
+require_once $DmDirPath.'Dm/Image/Filter/InstagramLoFi.php';
+require_once $DmDirPath.'Dm/Image/Filter/InstagramWalden.php';
+require_once $DmDirPath.'Dm/Image/Filter/InstagramToaster.php';
+</pre>
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方1 〜 画像の表示</h2>
+			サイズが横400x縦300で、色が0099FFで、透明度がFF（つまり透明ではない）の画像を作成し、出力している例です。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->display();
+exit;
+</pre>
+			<img src="sample_display.png">
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方2 〜 DataSchemeURIを使った表示</h2>
+			DataSchemeURIを使った出力にも対応していますので、タグに直接画像を埋め込む事ができます。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
 
-<h1>DmImage</h1>
+?&gt;&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+	&lt;meta charset="UTF-8" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	
+	DATA SCHEME URIで表示
+	&lt;br&gt;
+	&lt;img src="&lt;?= $image->toDataSchemeURI() ?&gt;"&gt;
+	
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+			このコードで出力すると実際に出力されるimgタグは次のようになっています。
+			<pre class="prettyprint linenums">
+&lt;img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAEsCAYAAADtt+
+XCAAAEPElEQVR4Xu3VMQ3AMBDAwDT8CRTtl0CkqJ7vZu9+1juzAOCnfQsA4MRAAEgMBIDEQABIDAS
+AxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDE
+QABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAA
+EgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASA
+wEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDAS
+AxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDE
+QABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAA
+EgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASA
+wEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDAS
+AxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDE
+QABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAA
+EgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASA
+wEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDAS
+AxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDE
+QABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAA
+EgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASA
+wEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDAS
+AxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDE
+QABIDASAxEAASAwEgMRAAEgMBIDEQABIDASAxEAASAwEgMRAAEgMBIDEQABIDASA5AOLiwTvg1OqX
+wAAAABJRU5ErkJggg=="&gt;
+</pre>
+			<img src="sample_data_scheme_uri.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方3 〜 画像のファイル出力</h2>
+			生成したインスタンスは画像ファイルとしても出力可能です。
+			<br>
+			下記の例ではpng画像1枚、jpg画像2枚、gif画像1枚をサーバー上にファイル出力しています。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->textGraphics
+	->setColor(0xFFFFFFFF)
+	->setFontSize(30)
+	->textTo(80, 150, 'Hello world.')
+;
+$image->saveTo('/path/to/dir/saved_image.png');
+$image->saveTo('/path/to/dir/saved_image.jpg');
+$image->saveTo('/path/to/dir/saved_image.jpeg');
+$image->saveTo('/path/to/dir/saved_image.gif');
+</pre>
+			<img src="sample_save_to.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方4 〜 ダウンロードダイアログからの画像ダウンロード</h2>
+			下記のコードで画像がブラウザへダウンロードされます。
+			<br>
+			下記の例ではjpg形式で画像クオリティを50/100でブラウザへのダウンロードを行なっています。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->startDownload('download','jpg',50);
+</pre>
+			<img src="sample_start_download.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方5 〜 背景色指定の一例</h2>
+			色指定の方法は0xFF001122のような16進数指定以外にも、Dm_Colorクラスを使用すれば色の微調整が可能です。
+			<pre class="prettyprint linenums">
+&lt;?php
+$color = Dm_Color::argb(1, 255, 0, 0); //RGB指定
+$color->v *= 0.5; //明度を半分に（HSV）
+$image = new Dm_Image(400,300, $color->toInt());
+$image->display();
+exit;
+</pre>
+			<img src="sample_color.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方6 〜 四角形の描画</h2>
+			XY座標を指定して画像へ四角形を描画します。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->graphics->drawRect(20, 100, 360, 100);
+$image->display();
+exit;
+</pre>
+			<img src="sample_draw_rect.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方7 〜 図形描画時のstyle指定</h2>
+			描画前に塗りの色と線の色を指定し、図形描画できます。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->graphics
+	->lineStyle(0,0)
+	->fillStyle(0xFFFFFFFF)
+	->drawRect(70, 40, 200, 150)
+	->lineStyle(10,0x6600FFFF)
+	->fillStyle(0)
+	->drawRect(100, 70, 200, 150)
+	->lineStyle(20,0xFF3300FF)
+	->fillStyle(0x9900AAFF)
+	->drawRect(130, 100, 200, 150)
+;
+$image->display();
+exit;
+</pre>
+			<img src="sample_graphic_style.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方8 〜 基本図形の描画</h2>
+			色々な図形を描画できます。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->graphics
+	->lineStyle(1,0xFFFFFFFF)
+	->fillStyle(0xFF66BBFF)
+	->drawRect(10, 10, 190, 140)
+	->drawCircle(100, 225, 50)
+	->drawEllipse(300, 75, 150, 100)
+	->drawPie(300, 225, 150, 100, 0, 135)
+;
+$image->display();
+exit;
+</pre>
+			<img src="sample_basic_shapes.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方9 〜 直線図形の描画</h2>
+			直線を使って複雑な図形の描画も可能です。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->graphics
+	->lineStyle(1,0xFFFFFFFF)
+	->fillStyle(0x99001199)
+	->beginLineFill()
+	->moveTo(200, 10)
+	->lineTo(230, 100)
+	->lineTo(340, 100)
+	->lineTo(250, 160)
+	->lineTo(300, 290)
+	->lineTo(200, 190)
+	->lineTo(100, 290)
+	->lineTo(150, 160)
+	->lineTo(60,  100)
+	->lineTo(170, 100)
+	->lineTo(200, 10)
+	->endLineFill()
+;
+$image->display();
+exit;
+</pre>
+			<img src="sample_line_to.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方10 〜 テキストの描画</h2>
+			文字の描画もできます。
+			<br>
+			GDでテキストを描画するのは面倒ですが、ライブラリ内にフォントが組み込んでいることで簡単に描画できます。
+			<pre class="prettyprint linenums">
+&lt;?php
+$image = new Dm_Image(400,300, 0xFF0099FF);
+$image->textGraphics
+	//->setFontFile('path/to/fontfile.ttf') //フォント指定したい場合
+	->setColor(0xFFFFFFFF)
+	->setFontSize(30)
+	->textTo(70, 230, 'Hello world.',45)
+	->setColor(0xFF000000)
+	->textTo(244, 210, '日本語。',45)
+	->setColor(0xFFFFFFFF)
+	->textTo(240, 210, '日本語。',45)
+;
+$image->display();
+exit;
+</pre>
+			<img src="sample_text_to.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方11 〜 filterを使った画像のリサイズ</h2>
+			filter機能を使うと画像の加工も簡単にできます。
+			<br>
+			デフォルトで画像のリサイズや切り抜きを行うクラスが用意されています。
+			<br>
+			下記の例では2つのfilterを組み合わせ、200x200に収まるサイズに画像をリサイズしています。
+			<pre class="prettyprint linenums">
+&lt;?php
+$originalImagePath = './horse.jpeg';
+$width = 200;
+$height = 200;
+$fitFilter = new Dm_Image_Filter_Fit($width,$height,true);
+$cropFilter = new Dm_Image_Filter_Crop($width,$height);
 
+$image = new Dm_Image_File($originalImagePath);
+$image-&gt;applyFilters(array(
+		$fitFilter,
+		$cropFilter
+	));
 
+?&gt;&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+	&lt;meta charset="UTF-8" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div&gt;
+		元画像&lt;br&gt;
+		&lt;img src="&lt;?=$originalImagePath?&gt;"&gt;
+	&lt;/div&gt;
+	&lt;div&gt;
+		Filter適用後（縦&lt;?=$width?&gt; x 横&lt;?=$height?&gt; に収まるようにリサイズ）&lt;br&gt;
+		&lt;img src="&lt;?=$image-&gt;toDataSchemeURI()?&gt;" /&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+			<img src="sample_filters.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方12 〜 Instagram風の画像加工フィルタ</h2>
+			Instagramっぽく画像を加工するクラスが3つ用意されています。
+			<br>
+			色の加工とフレームの組み合わせは変更可能です。
+			<pre class="prettyprint linenums">
+&lt;?php
+$originalImagePath = './horse.jpeg';
+$filter1 = new Dm_Image_Filter_InstagramLoFi(300,1);
+$filter2 = new Dm_Image_Filter_InstagramWalden(300,2);
+$filter3 = new Dm_Image_Filter_InstagramToaster(300);
+
+$image1 = new Dm_Image_File($originalImagePath);
+$image1-&gt;applyFilter($filter1);
+$image2 = new Dm_Image_File($originalImagePath);
+$image2-&gt;applyFilter($filter2);
+$image3 = new Dm_Image_File($originalImagePath);
+$image3-&gt;applyFilter($filter3);
+
+?&gt;&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+	&lt;meta charset="UTF-8" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div&gt;
+		元画像&lt;br&gt;
+		&lt;img src="&lt;?=$originalImagePath?&gt;"&gt;
+	&lt;/div&gt;
+	&lt;div&gt;
+		Instagram風Filter適用後&lt;br&gt;
+		&lt;img src="&lt;?=$image1-&gt;toDataSchemeURI()?&gt;" /&gt;
+		&lt;img src="&lt;?=$image2-&gt;toDataSchemeURI()?&gt;" /&gt;
+		&lt;img src="&lt;?=$image3-&gt;toDataSchemeURI()?&gt;" /&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+			<img src="sample_instagram_filters.png">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2>使い方13 〜 2枚の画像を合成</h2>
+			2枚の画像を合成できます。
+			<br>
+			下記の例では写真の上に半透明のロゴ画像を合成しています。
+			<pre class="prettyprint linenums">
+&lt;?php
+$filter = new Dm_Image_Filter_Fit(400,400);
+$image = new Dm_Image_File(dirname(__FILE__).'/horse.jpeg');
+$image->applyFilter($filter);
+
+$logoImage = new Dm_Image_File(dirname(__FILE__).'/php.gif');
+$image->draw($logoImage,20,20);
+
+$image->display();
+exit;
+</pre>
+			<img src="sample_merge.png">
+			
+		</div>
+		
+		
+	</div>
+	
+	
+	<script>prettyPrint();</script>
 </body>
 </html>
