@@ -20,16 +20,43 @@
 		
 		<div class="section">
 			
+			<h2>目次</h2>
+			<ul>
+				<li><a href="#about">DmImageについて</a></li>
+				<li><a href="#include">include方法</a></li>
+				<li><a href="#howto">使い方</a></li>
+			</ul>
+		</div>
+		
+		<div class="section" id="about">
+			
 			<h2>DmImageについて</h2>
 			<ul>
 				<li>PHPライブラリ</li>
 				<li>PHP5.0以上で動作</li>
 				<li>GDのラッパー</li>
 				<li>GDが入っていれば動く</li>
+				<li>
+					<dl>
+						<dt>対応するフォーマット</dt>
+						<dd>・jpg(jpeg)</dd>
+						<dd>・png</dd>
+						<dd>・gif</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
+						<dt>注意点</dt>
+						<dd>・円の描画の際、線を半透明にするとあまり綺麗に描画されない</dd>
+						<dd>・bmpに対応していない</dd>
+					</dl>
+					
+				</li>
+				
 			</ul>
 		</div>
 		
-		<div class="section">
+		<div class="section" id="include">
 			
 			<h2>include方法</h2>
 			一応PSR-0に準拠したつもりなので、Zendのオートローダー等で自動で読み込めると思います。
@@ -65,7 +92,7 @@ require_once $DmDirPath.'Dm/Image/Filter/InstagramToaster.php';
 		</div>
 		
 		
-		<div class="section">
+		<div class="section" id="howto">
 			
 			<h2>使い方1 〜 画像の表示</h2>
 			サイズが横400x縦300で、色が0099FFで、透明度がFF（つまり透明ではない）の画像を作成し、出力している例です。
@@ -83,6 +110,8 @@ exit;
 			
 			<h2>使い方2 〜 DataSchemeURIを使った表示</h2>
 			DataSchemeURIを使った出力にも対応していますので、タグに直接画像を埋め込む事ができます。
+			<br>
+			なお、この機能を使用する際、ライブラリ内のディレクトリに一時ファイルを作成しますのでディレクトリの権限設定にご注意ください。
 			<pre class="prettyprint linenums">
 &lt;?php
 $image = new Dm_Image(400,300, 0xFF0099FF);
@@ -418,6 +447,132 @@ exit;
 			
 		</div>
 		
+		
+		<div class="section">
+			
+			<h2>使い方14 〜 ドラえもん</h2>
+			描画メソッドを組み合わせるとドラえもんも描けます。
+			<br>
+			フォントはドラえもんフォントを使っています。
+			<pre class="prettyprint linenums">
+&lt;?php
+
+$colorBody = 0xFF0099FF;
+$colorLine = 0xFF003399;
+$colorWhite = 0xFFFFFFFF;
+$colorEye  = 0xFF000000;
+$colorRed  = 0xFFFF0000;
+$colorYellow = 0xFFFFFF00;
+$thickness = 3;
+$image = new Dm_Image(500,600,0xFFFFFFFF);
+$image->graphics
+	
+	//体
+	->fillStyle($colorBody)
+	->lineStyle($thickness,$colorLine)
+	->beginLineFill()
+	->moveTo(260, 440)
+	->lineTo(260, 450)
+	->lineTo(360, 450)
+	->lineTo(360, 370)
+	->lineTo(400, 410)
+	->lineTo(440, 370)
+	->lineTo(360, 290)
+	->lineTo(140, 290)
+	->lineTo(60 , 370)
+	->lineTo(100, 410)
+	->lineTo(140, 370)
+	->lineTo(140, 450)
+	->lineTo(240, 450)
+	->lineTo(240, 440)
+	->endLineFill()
+	
+	//手
+	->fillStyle($colorWhite)
+	->drawCircle(410, 380, 35)
+	->drawCircle(90 , 380, 35)
+	
+	//ポケット
+	->drawCircle(250, 330, 85)
+	->drawPie(250, 350, 120, 100, 0, 180)
+	->moveTo(190, 350)
+	->lineTo(310, 350)
+	
+	//足
+	->drawRect(260, 450, 100, 29)
+	->drawPie(359, 465, 20, 30, -90, 90)
+	->drawPie(262, 465, 20, 30, 90, -90)
+	->drawRect(140, 450, 100, 29)
+	->drawPie(239, 465, 20, 30, -90, 90)
+	->drawPie(142, 465, 20, 30, 90, -90)
+	
+	//頭
+	->fillStyle($colorBody)
+	->drawEllipse(250, 150, 350, 280)
+	->fillStyle($colorWhite)
+	->drawEllipse(250, 190, 280, 190)
+	
+	//目
+	->drawEllipse(290, 100, 80, 90)
+	->drawEllipse(210, 100, 80, 90)
+	->fillStyle($colorEye)
+	->drawCircle(270, 110, 10)
+	->drawCircle(230, 110, 10)
+	
+	//鼻・口・ひげ
+	->fillStyle($colorRed)
+	->drawCircle(250, 140, 15)
+	->lineStyle(0)
+	->fillStyle($colorWhite)
+	->drawCircle(255, 135, 5)
+	->lineStyle($thickness,$colorLine)
+	->moveTo(250, 153)
+	->lineTo(250, 250)
+	->fillStyle(0)
+	->drawPie(250, 200, 160, 100, 15, 165)
+	->moveTo(300, 170)
+	->lineTo(350, 150)
+	->moveTo(300, 180)
+	->lineTo(350, 180)
+	->moveTo(300, 190)
+	->lineTo(350, 210)
+	->moveTo(200, 170)
+	->lineTo(150, 150)
+	->moveTo(200, 180)
+	->lineTo(150, 180)
+	->moveTo(200, 190)
+	->lineTo(150, 210)
+	
+	//首輪
+	->fillStyle($colorRed)
+	->drawRect(141, 260, 222, 30)
+	->drawPie(360, 275, 20, 30, -90,  90)
+	->drawPie(142, 275, 20, 30,  90, -90)
+	
+	//鈴
+	->fillStyle($colorYellow)
+	->drawCircle(250, 290, 20)
+	->moveTo(232, 280)
+	->lineTo(268, 280)
+	->moveTo(230, 285)
+	->lineTo(270, 285)
+	->moveTo(250, 300)
+	->lineTo(250, 310)
+	->drawCircle(250, 298, 5)
+;
+$image->textGraphics
+	->setFontSize(70)
+	->setFontFile('font/doraemoji/doraemoji.ttf') //フォント
+	->setColor($colorLine)
+	->textTo(20, 580, 'ドラえもん')
+;
+
+$image->display();
+exit;
+</pre>
+			<img src="sample_doraemon.png">
+			
+		</div>
 		
 	</div>
 	
