@@ -23,9 +23,31 @@
 			
 			<h2>目次</h2>
 			<ul>
-				<li><a href="#about">DmImageについて</a></li>
-				<li><a href="#include">include方法</a></li>
-				<li><a href="#howto">使い方</a></li>
+				<li>
+					<a href="#about">DmImageについて</a>
+				</li>
+				<li>
+					<a href="#include">include方法</a>
+				</li>
+				<li>
+					<a href="#howto">使い方</a>
+					<ul>
+						<li><a href="#howto1">使い方1 〜 画像の表示</a></li>
+						<li><a href="#howto2">使い方2 〜 DataSchemeURIを使った表示</a></li>
+						<li><a href="#howto3">使い方3 〜 画像のファイル出力</a></li>
+						<li><a href="#howto4">使い方4 〜 ダウンロードダイアログからの画像ダウンロード</a></li>
+						<li><a href="#howto5">使い方5 〜 背景色指定の一例</a></li>
+						<li><a href="#howto6">使い方6 〜 四角形の描画</a></li>
+						<li><a href="#howto7">使い方7 〜 図形描画時のstyle指定</a></li>
+						<li><a href="#howto8">使い方8 〜 基本図形の描画</a></li>
+						<li><a href="#howto9">使い方9 〜 直線図形の描画</a></li>
+						<li><a href="#howto10">使い方10 〜 テキストの描画</a></li>
+						<li><a href="#howto11">使い方11 〜 filterを使った画像のリサイズ</a></li>
+						<li><a href="#howto12">使い方12 〜 Instagram風の画像加工フィルタ</a></li>
+						<li><a href="#howto13">使い方13 〜 2枚の画像を合成</a></li>
+						<li><a href="#howto14">使い方14 〜 ドラえもん</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		
@@ -94,7 +116,7 @@ require_once $DmDirPath.'Dm/Image/Filter/InstagramToaster.php';
 		
 		<div class="section" id="howto">
 			
-			<h2>使い方1 〜 画像の表示</h2>
+			<h2 id="howto1">使い方1 〜 画像の表示</h2>
 			サイズが横400x縦300で、色が0099FFで、透明度がFF（つまり透明ではない）の画像を作成し、出力している例です。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -108,7 +130,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方2 〜 DataSchemeURIを使った表示</h2>
+			<h2 id="howto2">使い方2 〜 DataSchemeURIを使った表示</h2>
 			DataSchemeURIを使った出力にも対応していますので、タグに直接画像を埋め込む事ができます。
 			<br>
 			なお、この機能を使用する際、ライブラリ内のディレクトリに一時ファイルを作成しますのでディレクトリの権限設定にご注意ください。
@@ -164,7 +186,7 @@ XwAAAABJRU5ErkJggg=="&gt;
 		
 		<div class="section">
 			
-			<h2>使い方3 〜 画像のファイル出力</h2>
+			<h2 id="howto3">使い方3 〜 画像のファイル出力</h2>
 			生成したインスタンスは画像ファイルとしても出力可能です。
 			<br>
 			下記の例ではpng画像1枚、jpg画像2枚、gif画像1枚をサーバー上にファイル出力しています。
@@ -188,7 +210,7 @@ $image->saveTo('/path/to/dir/saved_image.gif');
 		
 		<div class="section">
 			
-			<h2>使い方4 〜 ダウンロードダイアログからの画像ダウンロード</h2>
+			<h2 id="howto4">使い方4 〜 ダウンロードダイアログからの画像ダウンロード</h2>
 			下記のコードで画像がブラウザへダウンロードされます。
 			<br>
 			下記の例ではjpg形式で画像クオリティを50/100でブラウザへのダウンロードを行なっています。
@@ -204,7 +226,7 @@ $image->startDownload('download','jpg',50);
 		
 		<div class="section">
 			
-			<h2>使い方5 〜 背景色指定の一例</h2>
+			<h2 id="howto5">使い方5 〜 背景色指定の一例</h2>
 			色指定の方法は0xFF001122のような16進数指定以外にも、Dm_Colorクラスを使用すれば色の微調整が可能です。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -221,7 +243,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方6 〜 四角形の描画</h2>
+			<h2 id="howto6">使い方6 〜 四角形の描画</h2>
 			XY座標を指定して画像へ四角形を描画します。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -237,7 +259,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方7 〜 図形描画時のstyle指定</h2>
+			<h2 id="howto7">使い方7 〜 図形描画時のstyle指定</h2>
 			描画前に塗りの色と線の色を指定し、図形描画できます。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -263,7 +285,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方8 〜 基本図形の描画</h2>
+			<h2 id="howto8">使い方8 〜 基本図形の描画</h2>
 			色々な図形を描画できます。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -286,7 +308,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方9 〜 直線図形の描画</h2>
+			<h2 id="howto9">使い方9 〜 直線図形の描画</h2>
 			直線を使って複雑な図形の描画も可能です。
 			<pre class="prettyprint linenums">
 &lt;?php
@@ -318,7 +340,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方10 〜 テキストの描画</h2>
+			<h2 id="howto10">使い方10 〜 テキストの描画</h2>
 			文字の描画もできます。
 			<br>
 			GDでテキストを描画するのは面倒ですが、ライブラリ内にフォントが組み込んでいることで簡単に描画できます。
@@ -345,7 +367,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方11 〜 filterを使った画像のリサイズ</h2>
+			<h2 id="howto11">使い方11 〜 filterを使った画像のリサイズ</h2>
 			filter機能を使うと画像の加工も簡単にできます。
 			<br>
 			デフォルトで画像のリサイズや切り抜きを行うクラスが用意されています。
@@ -388,7 +410,7 @@ $image-&gt;applyFilters(array(
 		
 		<div class="section">
 			
-			<h2>使い方12 〜 Instagram風の画像加工フィルタ</h2>
+			<h2 id="howto12">使い方12 〜 Instagram風の画像加工フィルタ</h2>
 			Instagramっぽく画像を加工するクラスが3つ用意されています。
 			<br>
 			色の加工とフレームの組み合わせは変更可能です。
@@ -431,7 +453,7 @@ $image3-&gt;applyFilter($filter3);
 		
 		<div class="section">
 			
-			<h2>使い方13 〜 2枚の画像を合成</h2>
+			<h2 id="howto13">使い方13 〜 2枚の画像を合成</h2>
 			2枚の画像を合成できます。
 			<br>
 			下記の例では写真の上に半透明のロゴ画像を合成しています。
@@ -454,7 +476,7 @@ exit;
 		
 		<div class="section">
 			
-			<h2>使い方14 〜 ドラえもん</h2>
+			<h2 id="howto14">使い方14 〜 ドラえもん</h2>
 			描画メソッドを組み合わせるとドラえもんも描けます。
 			<br>
 			フォントはドラえもんフォントを使っています。
