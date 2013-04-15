@@ -64,6 +64,9 @@
 						<li><a href="#howto12">使い方12 〜 Instagram風の画像加工フィルタ</a></li>
 						<li><a href="#howto13">使い方13 〜 2枚の画像を合成</a></li>
 						<li><a href="#howto14">使い方14 〜 ドラえもん</a></li>
+						<li><a href="#howto15">使い方15 〜 Processingのソースを移植</a></li>
+						<li><a href="#howto16">使い方16 〜 JavaScriptのソースを移植</a></li>
+						<li><a href="#howto17">使い方17 〜 アニメーション表現</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -615,6 +618,184 @@ $image->display();
 exit;
 </pre>
 			<img src="sample_doraemon.png">
+			
+		</div>
+		
+		<div class="section">
+			
+			<h2 id="howto15">使い方15 〜 Processingのソースを移植</h2>
+			
+			Processingのソースを移植しました。
+			<br>
+			<a href="http://processing.org/learning/topics/tree.html">http://processing.org/learning/topics/tree.html</a>
+			
+			<pre class="prettyprint linenums">
+&lt;?php
+define('WIDTH', 640);
+define('HEIGHT', 360);
+
+$theta = rand(1,20)*0.1;
+$image = new Dm_Image(WIDTH,HEIGHT,0xFF000000);
+draw();
+$image->display();
+
+function draw()
+{
+	global $image;
+	
+	$image->graphics
+		->lineStyle(1,0xFFFFFFFF)
+		->moveTo(WIDTH/2, HEIGHT)
+		->lineTo(WIDTH/2, HEIGHT-120);
+	$h = 120;
+	branch($h,-M_PI/2,WIDTH/2,HEIGHT-120);
+}
+function branch($h,$rotate,$x,$y)
+{
+	global $image,$theta;
+	if($h<2)return;
+	
+	$h *= 0.66;
+	
+	$movedX = cos($rotate+$theta)*$h + $x;
+	$movedY = sin($rotate+$theta)*$h + $y;
+	$image->graphics
+		->moveTo($x, $y)
+		->lineTo($movedX, $movedY);
+	branch($h,$rotate+$theta,$movedX,$movedY);
+	
+	$movedX = cos($rotate-$theta)*$h + $x;
+	$movedY = sin($rotate-$theta)*$h + $y;
+	$image->graphics
+		->moveTo($x, $y)
+		->lineTo($movedX, $movedY);
+	branch($h,$rotate-$theta,$movedX,$movedY);
+}
+</pre>
+			<img src="sample_tree.png">
+			<br>
+			下記の例では複数の静止画を出力し、アニメーションgifとして結合しています。
+			<br>
+			<img src="sample_tree_animate.gif">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2 id="howto16">使い方16 〜 JavaScriptのソースを移植</h2>
+			
+			JavaScriptのソースを移植しました。
+			<br>
+			<a href="http://cssdeck.com/labs/the-matrix">http://cssdeck.com/labs/the-matrix</a>
+			
+			<pre class="prettyprint linenums">
+&lt;?php
+define('W', 640);
+define('H', 360);
+define('FONT_SIZE', 11);
+define('FRAME', 200);
+
+$STR = array('感','憂','位','中','上','医','受','柄','下','嫁','木','区','毛','弧');
+$letters = array_fill(0,((int)W/FONT_SIZE),0);
+$image = new Dm_Image(W,H,0xFF000000);
+$graphics = $image->graphics;
+$textGraphics = $image->textGraphics;
+$graphics->fillStyle(0x22000000);
+for($i=0;$i&lt;FRAME;$i++) draw();
+$image->display();
+
+function draw()
+{
+	global $STR,$letters,$graphics,$textGraphics;
+	
+	$graphics->drawRect(0, 0, W, H);
+	$l = count($letters);
+	for($i=0;$i&lt;$l;$i++){
+		$str = $STR[rand(0,count($STR)-1)];
+		$y = $letters[$i];
+		$textGraphics
+			->setColor(0xFF00FF00)
+			->setFontSize(FONT_SIZE-3)
+			->textTo($i*FONT_SIZE, $y, $str);
+		$letters[$i] = ($y > H + rand(0,1e3)) ? 0 : $y+FONT_SIZE;
+	}
+}
+</pre>
+			<img src="sample_matrix.png">
+			<br>
+			下記の例では複数の静止画を出力し、アニメーションgifとして結合しています。
+			<br>
+			<img src="sample_matrix_animate.gif">
+			
+		</div>
+		
+		
+		<div class="section">
+			
+			<h2 id="howto17">使い方17 〜 アニメーション表現</h2>
+			
+			Flashのようなアニメーション表現も可能です。
+			
+			<pre class="prettyprint linenums">
+&lt;?php
+define('W', 640);
+define('H', 360);
+define('C', 200);
+define('D', 50);
+
+$image = new Dm_Image(W,H,0xFF000000);
+$graphics = $image->graphics;
+$graphics
+	->lineStyle(0)
+	->fillStyle(0x66FFFFFF);
+
+$nodeList = array();
+for ($i=0; $i < C; $i++) { 
+	$nodeList[] = array(
+		rand(-20,W+20),
+		rand(-20,H+20),
+		0
+	);
+}
+
+for ($i=0; $i < C; $i++) {
+	$node = &$nodeList[$i];
+	
+	for ($j=$i; $j < C; $j++) {
+		if($i==$j)continue;
+		$nNode = &$nodeList[$j];
+		$x = $node[0] - $nNode[0];
+		$y = $node[1] - $nNode[1];
+		$diff = sqrt($x*$x+$y*$y);
+		if($diff < D){
+			$node[2] += 1;
+			$nNode[2] += 1;
+			$graphics
+				->lineStyle(
+					min(10*(D-$diff)/D,4),
+					Dm_Color::argb((D-$diff)/D*0.6+0.2,255,255,255)->toInt()
+				)
+				->moveTo($node[0], $node[1])
+				->lineTo($nNode[0], $nNode[1])
+			;
+		}
+	}
+}
+
+$graphics->lineStyle(0,0x11FFFFFF);
+for ($i=0; $i < C; $i++) {
+	$node = $nodeList[$i];
+	$graphics->drawCircle($node[0], $node[1], 2+$node[2]*$node[2]*0.3);
+}
+
+$image->display();
+</pre>
+			<img src="sample_node.png">
+			<br>
+			下記の例では複数の静止画を出力し、アニメーションgifとして結合しています。
+			<br>
+			<img src="sample_node_animate.gif">
 			
 		</div>
 		
