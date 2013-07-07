@@ -102,9 +102,9 @@
 		<div class="section" id="include">
 			
 			<h2>include方法</h2>
-			一応PSR-0に準拠したつもりなので、Zendのオートローダー等で自動で読み込めると思います。
+			PSR-0に準拠していますので、Zendのオートローダー等で自動で読み込めると思います。
 			<br>
-			namespaceは使用していませんが、SplClassLoaderを使う場合と使わない場合はそれぞれこんな感じです。お好きな方法で読み込んでください。
+			PHP5.3以下でも使えるようにnamespaceは使用していませんが、SplClassLoaderを使う場合と使わない場合はそれぞれこんな感じです。お好きな方法で読み込んでください。
 			<pre class="prettyprint linenums">
 &lt;?php
 // SplClassLoaderを使用する場合
@@ -132,6 +132,19 @@ require_once $DmDirPath.'Dm/Image/Filter/InstagramLoFi.php';
 require_once $DmDirPath.'Dm/Image/Filter/InstagramWalden.php';
 require_once $DmDirPath.'Dm/Image/Filter/InstagramToaster.php';
 </pre>
+			
+			Composerを利用する場合はcomposer.jsonのrequireに "demouth/dmimage": "dev-master" と書き、updateしておけばrequireしなくても使えます。
+			<br>
+			FuelPHP1.6の場合、composer.jsonのrequireの部分を抜き出すと例として下記のようになります。
+			<pre class="prettyprint linenums">
+    "require": {
+        "php": ">=5.3.3",
+        "monolog/monolog": "1.5.*",
+        "fuelphp/upload": "2.0",
+        "demouth/dmimage": "dev-master"
+    },
+</pre>
+			
 		</div>
 		
 		
